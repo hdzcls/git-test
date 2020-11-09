@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>首页</title>
+    <meta name="description" content="Bootstrap Basic pills Based Navigation Example">
+    <link href="/webjars/bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+</head>
+
+<script type="text/javascript">
+
+       function getDate(){
+             var date = new Date();
+             var date1 = date.toLocaleString();
+             var div1 = document.getElementById("times");
+             div1.innerHTML = date1;
+               }
+           setInterval("getDate()",1000);
+          </script>
+<body>
+
+<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+        <a class="nav-link active" href="/">首页</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/hello">用户管理</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/project">项目管理</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/task" tabindex="-1" aria-disabled="true">任务管理</a>
+    </li>
+</ul>
+</br>
+</br>
+<h1 align="center"><div id="times">
+
+          </div></h1>
+
+</body>
+</html>

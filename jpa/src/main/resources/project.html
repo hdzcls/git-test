@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>项目信息</title>
+</head>
+<script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
+<link href="/webjars/bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="/webjars/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+<script src="/webjars/vue/2.6.11/vue.min.js"></script>
+<script src="/webjars/axios/dist/axios.min.js"></script>
+<body>
+<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+        <a class="nav-link" href="/">首页</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/hello">用户管理</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="/project">项目管理</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/task" tabindex="-1" aria-disabled="true">任务管理</a>
+    </li>
+</ul>
+</br>
+</br>
+<div id="project">
+    <div class="container">
+            <button type="button" class="btn btn-success" @click="addProject">添加项目</button>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <table class="table table-hover table-bordered">
+                            <tr>
+                                <td>编号</td>
+                                <td>项目名</td>
+                                <td>开始时间</td>
+                                <td>结束时间</td>
+                                <td>操作</td>
+                            </tr>
+                            <tr v-for="item in msg">
+                                <td>{{item.id}}</td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.starTime}}</td>
+                                <td>{{item.endTime}}</td>
+                                <td><input type="button" class="btn btn-primary" value="成员" @click="show(item.id)">
+                                    <input type="button" value="修改" class="btn btn-info" @click="updateProject(item.id)">
+                                    <input type="button" value="删除" class="btn btn-danger" @click="deleteFun(item.id)"></td>
+
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+</div>
+    <div id="myModal02" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">修改姓名</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+                <form action="/updateProject" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"> 编号:</label>
+                            <input type="text" class="form-control" name="id" :value="getback.id" readonly="readonly">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"> 项目名称:</label>
+                            <input type="text" class="form-control" name="name" :value="getback.name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">开始时间：</label>
+                            <input type="text" class="form-control" name="starTime" :value="getback.starTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">结束时间：</label>
+                            <input type="text" class="form-control" name="endTime" :value="getback.endTime">
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">关闭</button>
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="myModal03" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">项目成员</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+                <table class="table table-hover table-bordered">
+                    <tr>
+                        <td>ID</td>
+                        <td>姓名</td>
+                        <td>年龄</td>
+                        <td>学历</td>
+                        <td>学校</td>
+                        <td>毕业时间</td>
+                        <td>移出</td>
+
+                    </tr>
+                    <tr v-for="item in list">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.age}}</td>
+                        <td>{{item.education}}</td>
+                        <td>{{item.school}}</td>
+                        <td>{{item.gradTime}}</td>
+                        <td><input type="button" value="移出" class="btn btn-danger" @click="deleteBypp(item.id)"></td></td>
+
+
+                    </tr>
+
+                </table>
+                <button type="button" class="btn btn-success" @click="gun">添加</button>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="myModal04" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">添加成员</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+                <table class="table table-hover table-bordered">
+                    <tr>
+                        <td>ID</td>
+                        <td>姓名</td>
+                        <td>年龄</td>
+                        <td>学历</td>
+                        <td>学校</td>
+                        <td>毕业时间</td>
+                        <td>移入</td>
+
+                    </tr>
+                    <tr v-for="item in back">
+                        <td>{{item.id}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.age}}</td>
+                        <td>{{item.education}}</td>
+                        <td>{{item.school}}</td>
+                        <td>{{item.gradTime}}</td>
+                        <td><input type="button" value="移入" class="btn btn-success" @click="addNumber(item.id)"></td></td>
+
+
+                    </tr>
+
+                </table>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">添加项目</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+                <form action="/addProject" method="post">
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label"> 项目名称:</label>
+                            <input type="text" class="form-control" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">开始时间：</label>
+                            <input type="text" class="form-control" name="starTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">结束时间：</label>
+                            <input type="text" class="form-control" name="endTime">
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-default">重置</button>
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+</body>
+<script>
+    var project=new Vue({
+        el:"#project",
+        data:{
+            msg:[],
+            list:[],
+            back:[],
+            getback:[],
+            uid:null
+        },
+    methods:{
+        findAll:function(){
+            var that=this;
+        axios.get("/findProject").then(function (response) {
+            that.msg=response.data;
+            console.log(response);
+
+    })
+    },
+        gun:function () {
+            var that=this;
+            $("#myModal04").modal();
+            axios.get("findAll").then(function(response){
+                    that.back=response.data;
+                    console.log(response);
+                }
+
+            )
+
+        },
+        show:function (id) {
+            this.uid=id;
+            $("#myModal03").modal();
+            var that=this;
+            axios.get("/findPerson?id="+id).then(function (response) {
+                that.list=response.data;
+
+            })
+
+        },
+        deleteFun:function (id) {
+
+            var c=confirm("您确定要删除该项目的所有信息吗？");
+            if(c){
+                axios.get("deleteProject?id="+id).then(function () {
+                    alert("删除成功");
+                    location.reload();
+
+                })}else {
+                return false;
+            }
+
+        },
+        deleteBypp:function (id) {
+            var that=this;
+            var c=confirm("您确定要移除该成员吗？")
+            if(c){
+                axios.get("deleteByPP?personId="+id+"&projectId="+this.uid).then(function () {
+                    alert("删除成功");
+                    that.show(that.uid);
+
+                })}else {
+                return false;
+            }
+
+        },
+        addProject:function () {
+            $("#myModal").modal();
+
+        },
+        updateProject:function (id) {
+            $("#myModal02").modal();
+            var that=this;
+            axios.get("findPById?id="+id).then(function(response){
+                    that.getback=response.data;
+            }
+
+            )
+
+        },
+        addNumber:function(id){
+            var that=this;
+            axios.get("addNumber?personId="+id+"&projectId="+this.uid).then(function () {
+                alert("添加成功");
+                that.show(that.uid);
+            })
+
+        }
+    } ,
+
+        mounted(){
+            this.findAll();
+        }
+    })
+
+
+</script>
+</html>
